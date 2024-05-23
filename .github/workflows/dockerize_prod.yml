@@ -1,7 +1,7 @@
 name: Update the container calculator
 
 on:
-  push:
+  pull_request:
     branches:
       - 'prod'
 
