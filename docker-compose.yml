@@ -1,8 +1,0 @@
-version: '3.11'
-
-services:
-   vscontainer:
-      container_name: dcpolarys
-      image: mlarou2si/polarys:0.1
-      env_file:
-         - .env
