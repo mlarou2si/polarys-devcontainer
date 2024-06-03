@@ -30,4 +30,4 @@ jobs:
         with:
           file: Dockerfile
           push: true
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/polarys:$VERSION_SUFFIX.${{github.run_number}}
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/polarys:${{env.VERSION_SUFFIX}}.${{github.run_number}}
