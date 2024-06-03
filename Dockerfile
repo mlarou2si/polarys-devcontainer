@@ -19,17 +19,15 @@ RUN apt-get update \
     && apt-get install -y build-essential --no-install-recommends \
         git \
         curl \
+        openssh-client \
         rpm \
         llvm \
         libxml2-dev \
         libxmlsec1-dev
 
+
 # Python and poetry installation
 ARG HOME="/home/$USER"
-#ARG PYTHON_VERSION=3.11
-
-#ENV PYENV_ROOT="${HOME}/.pyenv"
-#ENV PATH="${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${HOME}/.local/bin:$PATH"
 
 RUN echo "Installing poetry" \
     && curl -sSL https://install.python-poetry.org | python3 - \
@@ -41,6 +39,12 @@ RUN echo "Installing poetry" \
     && rpm -ivh snowflake-snowsql-*.rpm \
     && rm -r snowflake-snowsql-*.rpm
 
+# SSH config
+RUN eval "$(ssh-agent -s)"
+COPY .bash_profile ${HOME}/
+
+COPY --chmod=a-w .dbt ${HOME}/.dbt
+COPY --chmod=a-w config.toml ${HOME}/.config/snowflake/
 
 USER $USER
 WORKDIR /workspace
