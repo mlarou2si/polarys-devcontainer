@@ -1,0 +1,8 @@
+[connections.myconnection]
+
+account = "{{ SNOWFLAKE_ACCOUNT }}"
+user = "{{ SNOWFLAKE_USER }}"
+warehouse = "{{ SNOWFLAKE_WAREHOUSE }}"
+database = "{{ SNOWFLAKE_DATABASE }}"
+schema = "{{ SNOWFLAKE_SCHEMA }}"
+authenticator = "externalbrowser"

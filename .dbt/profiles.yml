@@ -1,0 +1,30 @@
+dbt_devcontainer:
+  target: dev
+  outputs:
+    dev:
+      type: "{{ env_var('SNOWFLAKE_TYPE') }}"
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"
+      threads: "{{ env_var('DBT_THREADS') | int }}"
+
+      # forcing the SSO config
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      authenticator: externalbrowser
+      #password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      
+    prd:
+      type: "{{ env_var('SNOWFLAKE_PRD_TYPE') }}"
+      account: "{{ env_var('SNOWFLAKE_PRD_ACCOUNT') }}"
+      role: "{{ env_var('SNOWFLAKE_PRD_ROLE') }}"
+      database: "{{ env_var('SNOWFLAKE_PRD_DATABASE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_PRD_WAREHOUSE') }}"
+      schema: "{{ env_var('SNOWFLAKE_PRD_SCHEMA') }}"
+      threads: "{{ env_var('DBT_PRD_THREADS') | int }}"
+
+      # forcing the SSO config
+      user: "{{ env_var('SNOWFLAKE_PRD_USER') }}"
+      authenticator: externalbrowser
+      

@@ -1,45 +1,51 @@
-ARG PYTHON_VERSION=3.11
+FROM python:3.11-slim
 
-FROM python:${PYTHON_VERSION}-slim-buster AS root
-
-ARG DEBIAN_FRONTEND=noninteractive
 ARG USER=polarys
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+ENV USER=${USER}
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \ 
-    && apt-get install -y build-essential --no-install-recommends make \
-        ca-certificates \
+# Create the user
+RUN groupadd --gid $USER_GID $USER \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USER \
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER \
+    && chmod 0440 /etc/sudoers.d/$USER
+
+
+# install lib dependencies
+RUN apt-get update \ 
+    && apt-get install -y build-essential --no-install-recommends \
         git \
-        libssl-dev \
-        zlib1g-dev \
-        libbz2-dev \
-        libreadline-dev \
-        libsqlite3-dev \
-        wget \
         curl \
+        openssh-client \
+        rpm \
         llvm \
-        libncurses5-dev \
-        xz-utils \
-        tk-dev \
         libxml2-dev \
-        libxmlsec1-dev \
-        libffi-dev \
-        liblzma-dev
+        libxmlsec1-dev
 
-# manage the certifications
-#COPY ./certs/* /usr/local/share/ca-certificates/
-#RUN update-ca-certificates
 
 # Python and poetry installation
-USER $USER_NAME
-ARG HOME="/home/$USER_NAME"
+ARG HOME="/home/$USER"
 
-#ENV PYENV_ROOT="${HOME}/.pyenv"
-#ENV PATH="${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${HOME}/.local/bin:$PATH"
+RUN echo "Installing poetry" \
+    && curl -sSL https://install.python-poetry.org | python3 - \
+    && export PATH="${HOME}/.local/bin:$PATH" \
+    # Install dbt core (make a version env!)
+    && pip install dbt-core=="1.8.0" dbt-snowflake=="1.8.1" \
+    # Install snowsql and configure the connection to snowflake
+    && curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowflake-snowsql-1.3.0-1.x86_64.rpm \
+    && rpm -ivh snowflake-snowsql-*.rpm \
+    && rm -r snowflake-snowsql-*.rpm
 
-RUN echo "done 0" \
-    && curl -sSL https://install.python-poetry.org | python3 -
+# SSH config
+RUN eval "$(ssh-agent -s)"
+COPY .bash_profile ${HOME}/
 
-        
-USER $USER_NAME
+COPY --chmod=a-w .dbt ${HOME}/.dbt
+COPY --chmod=a-w config.toml ${HOME}/.config/snowflake/
+
+USER $USER
 WORKDIR /workspace
+CMD ["/bin/bash"]
