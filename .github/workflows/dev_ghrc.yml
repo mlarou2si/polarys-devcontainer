@@ -5,7 +5,7 @@ name: Create and publish a Docker image
 on:
   pull_request:
     branches:  
-      - 'develop'
+      - 'prod'
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
@@ -25,7 +25,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.ACCESS_TOKEN }}
       - name: Check
         uses: actions/checkout@v2
       - name: Build and push
