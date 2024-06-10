@@ -17,6 +17,6 @@ jobs:
       - uses: actions/chekout@v2
       - name: Build and publish GitHub registry
         run: |
-        docker login -u ${{ github.actor }} --password $${{ secrets.GITHUB_TOKEN }}
-        docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{vars.VERSION_SUFFIX}}.${{github.run_number}}
-        docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{vars.VERSION_SUFFIX}}.${{github.run_number}}
+          docker login -u ${{ github.actor }} --password $${{ secrets.GITHUB_TOKEN }}
+          docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{vars.VERSION_SUFFIX}}.${{github.run_number}}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{vars.VERSION_SUFFIX}}.${{github.run_number}}
