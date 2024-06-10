@@ -9,6 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   build_publish_docker:
@@ -18,5 +19,5 @@ jobs:
       - name: Build and publish GitHub registry
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ${{ env.REGISTRY }}
-          docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{vars.VERSION_SUFFIX}}.${{github.run_number}}
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{vars.VERSION_SUFFIX}}.${{github.run_number}}
+          docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BRANCH_NAME }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BRANCH_NAME }}
