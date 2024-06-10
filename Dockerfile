@@ -40,12 +40,6 @@ RUN echo "Installing poetry" \
 RUN echo "Install dbt core (make a version env!)" \ 
     && pip install dbt-core=="${DBT_CORE_VERSION}" dbt-snowflake=="${DBT_SNOWFLAKE_VERSION}"
 COPY --chmod=a-w .dbt ${HOME}/.dbt
-    
-#RUN echo "Install snowsql and configure the connection to snowflake" \
-#    && curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowflake-snowsql-1.3.0-1.x86_64.rpm \
-#    && rpm -ivh snowflake-snowsql-*.rpm \
-#    && rm -r snowflake-snowsql-*.rpm
-#COPY --chmod=a-w config.toml ${HOME}/.config/snowflake/
 
 
 # SSH config
