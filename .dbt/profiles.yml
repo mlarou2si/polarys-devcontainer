@@ -13,7 +13,14 @@ dbt_devcontainer:
       # forcing the SSO config
       user: "{{ env_var('SNOWFLAKE_USER') }}"
       authenticator: externalbrowser
-      #password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      
+      # verify optional parameters, also for production !
+      connect_retries: 0 # default 0
+      connect_timeout: 10 # default: 10
+      retry_on_database_errors: False # default: false
+      retry_all: False  # default: false
+      client_session_keep_alive: True
+      reuse_connections: True # default: false
       
     prd:
       type: "{{ env_var('SNOWFLAKE_PRD_TYPE') }}"
