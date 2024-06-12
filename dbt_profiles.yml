@@ -1,4 +1,4 @@
-dbt_devcontainer:
+
   target: dev
   outputs:
     dev:

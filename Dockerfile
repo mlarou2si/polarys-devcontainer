@@ -39,14 +39,15 @@ RUN echo "Installing poetry" \
 
 RUN echo "Install dbt core (make a version env!)" \ 
     && pip install dbt-core=="${DBT_CORE_VERSION}" dbt-snowflake=="${DBT_SNOWFLAKE_VERSION}"
-COPY --chmod=a-w .dbt ${HOME}/.dbt
+
+COPY etc/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY --chmod=a-w dbt_profiles.yml /tmp/dbt/
 
 
 # SSH config
 RUN eval "$(ssh-agent -s)"
 COPY .bash_profile ${HOME}/
-
-
 
 ENV SHELL /bin/bash
 
@@ -54,4 +55,4 @@ USER $USER
 WORKDIR /workspace
 EXPOSE 443 80
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
